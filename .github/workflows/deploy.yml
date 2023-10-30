@@ -76,10 +76,11 @@ jobs:
           role-duration-seconds: 900
           aws-region: us-west-2
 
-      - name: Deployer
+      - name: Mainnet Deployer
       - if: ${{ env.DATA_ENV }} == "Mainet" 
         run: echo "I will update a mainnet node"
         # .github/scripts/build.sh ${{ env.DATA }} ${{ env.DATA_ENV }}
+      - name: Testnet Deployer
       - if: ${{ env.DATA_ENV }} == "Testnet"
         run: echo "I will deploy/update a testnet node for user ${{ env.DATA_USER }}"
       # - name: Deploy or Upgrade a Testnet Node
