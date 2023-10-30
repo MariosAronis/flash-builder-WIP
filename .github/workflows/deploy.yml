@@ -82,8 +82,10 @@ jobs:
         run: |
             if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
               echo "updating production node"
+            fi
 
       - name: Testnet Deployer
         run: |
             if [ "${{ env.DATA_ENV }}" = "Testnet" ]; then
               echo "deploying/upgrading testnet node"
+            fi
