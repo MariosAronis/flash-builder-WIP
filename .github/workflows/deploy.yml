@@ -69,6 +69,8 @@ jobs:
         with:
           persist-credentials: false
 
+# ENHANCEMENT: SLC can be further tightened with the use of two separate OICD providers;
+# one for mainnet and one for testnet
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -77,9 +79,11 @@ jobs:
           aws-region: us-west-2
 
       - name: Mainnet Deployer
-      - if: env.DATA_ENV == "Mainet" 
-        run: echo "I will update a mainnet node"
-        
+        run: |
+            if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
+              echo "updating production node"
+
       - name: Testnet Deployer
-      - if: env.DATA_ENV == "Testnet"
-        run: echo "I will deploy/update a testnet node for user ${{ env.DATA_USER }}"
+        run: |
+            if [ "${{ env.DATA_ENV }}" = "Testnet" ]; then
+              echo "deploying/upgrading testnet node"
