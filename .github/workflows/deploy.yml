@@ -1,0 +1,89 @@
+name: Deploy FlashNode
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment, select Mainet for a production node, otherwise Testnet for Sepolia'
+        required: true
+        default: 'Testnet'
+        type: choice
+        options:
+              - Mainet
+              - Testnet
+      branch:
+        required: true
+
+jobs:
+
+  build:
+  name: Build
+  runs-on: ubuntu-latest
+  steps:
+
+  - name: Set up Go 1.x
+    uses: actions/setup-go@v3
+    with:
+      go-version: ^1.20
+    id: go
+
+  - name: Check out code into the Go module directory
+    uses: actions/checkout@v4
+
+  - name: Build
+    run: make geth
+
+  - name: Upload Artifact
+    uses: actions/upload-artifact@v3
+    with:
+      name: geth
+      path: build/bin/geth
+
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DATA_ENV: ${{ github.event.inputs.environment || 'Testnet' }}
+      DATA_USER: ${{ github.actor }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Check branch
+        run: |
+            if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
+              if [ "$GITHUB_REF_NAME" != "main" ]; then
+                echo "Operation not permitted"
+                exit 1
+              fi
+            fi
+
+      - name: Check User
+        run: |
+            if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
+              if [ "${{ env.DATA_USER }}" != "MariosAronis" ]; then
+                echo "User ${{ env.DATA_USER }} is not alllowed to deploy on Mainet"
+                exit 1
+              fi
+            fi
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::044425962075:role/flashnode-deploy-slc
+          role-duration-seconds: 900
+          aws-region: us-west-2
+
+      - name: Deployer
+        if [ "${{ env.DATA_ENV }}" = "Mainet" ]
+          run: echo "I will update a mainnet node"
+        # .github/scripts/build.sh ${{ env.DATA }} ${{ env.DATA_ENV }}
+        if [ "${{ env.DATA_ENV }}" = "Mainet" ]
+        run: echo "I will deploy/update a testnet node for user ${{ env.DATA_USER }}"
+      # - name: Deploy or Upgrade a Testnet Node
+      #   run: |
+      #       .github/scripts/deploy.sh ${{ env.DATA_ENV }}
