@@ -70,7 +70,7 @@ jobs:
           persist-credentials: false
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::044425962075:role/flashnode-deploy-slc
           role-duration-seconds: 900
