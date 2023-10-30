@@ -42,3 +42,6 @@ jobs:
       with:
         name: geth
         path: build/bin/geth
+        env-url: ArtifactURL
+    - name: ArtifactURL
+      run: echo "${{ env.ArtifactURL }}"
