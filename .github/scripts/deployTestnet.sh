@@ -8,7 +8,10 @@ VALUE=${USERNAME}-${BRANCH}
 
 echo $VALUE
 
-UserInstance=`aws ec2 describe-instances --filters "Name=tag:Name,Values=$VALUE" --output json --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,Tags:Tags}' | jq '.[]'`
+UserInstance=`aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=$VALUE" --output json \
+    --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,Tags:Tags}' \
+    | jq '.[]'`
 Length=`echo $UserInstance | jq '. | length'`
 echo $UserInstance
 echo $Length
