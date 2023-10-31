@@ -92,4 +92,4 @@ jobs:
             if [ "${{ env.DATA_ENV }}" = "Testnet" ]; then
               echo "deploying/upgrading testnet node for user ${{ env.DATA_USER }}"
             fi
-        run: 
+        # run: 
