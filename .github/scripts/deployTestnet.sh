@@ -16,7 +16,7 @@ Length=`echo $UserInstance | jq '. | length'`
 echo $UserInstance
 echo $Length
 
-if (( $Length == 1 )) ; then
+if (( $Length -eq 1 )) ; then
     echo "Uodating node"
 elif (( $Length > 1 )) ; then
     echo "Multiple nodes, must kill all and restart"
