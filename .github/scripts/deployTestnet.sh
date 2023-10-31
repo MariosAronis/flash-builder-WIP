@@ -23,7 +23,7 @@ aws ec2 run-instances \
   --security-group-ids $SG \
   --subnet-id $SUBNET \
   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":20,\"DeleteOnTermination\":true}}]" \
-#   --instance-initiated-shutdown-behavior terminate \
+  --instance-initiated-shutdown-behavior terminate \
   --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value="FlashNode-Testnet-$USERNAME-$BRANCH"},{Key=Branch,Value="$BRANCH"}]" \
   --metadata-options "InstanceMetadataTags=enabled"   
 }
