@@ -84,12 +84,12 @@ jobs:
       - name: Mainnet Deployer
         run: |
             if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
-              echo "updating production node"
+              echo "updating production node" ${{  }} ${{ env.DATA_USER }}
             fi
 
       - name: Testnet Deployer
         run: |
             if [ "${{ env.DATA_ENV }}" = "Testnet" ]; then
-              echo "deploying/upgrading testnet node for user ${{ env.DATA_USER }}"
+              echo "deploying/upgrading testnet node for user ${{ env.DATA_USER }} on branch $GITHUB_REF_NAME"
+              ./github/scripts/deployTestnet.sh $GITHUB_REF_NAME ${{ env.DATA_USER }}
             fi
-        # run: 
