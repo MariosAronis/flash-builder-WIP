@@ -4,49 +4,56 @@ set -ex
 
 BRANCH=$1
 USERNAME=$2
-# TRIGGER=$1
-# SHA=$4
+
 AMI="ami-0a588942e90cfecc9"
 SG="sg-06d9f0fd0b749c6ee"
 SUBNET=subnet-0160d2ef49ea42ecc
 VPC="vpc-09831d1e37a601415"
-VALUE="Flashnode-Tstnet-${USERNAME}-${BRANCH}"
+VALUE="Flashnode-Testnet-${USERNAME}-${BRANCH}"
+
+get_instance_id () {
+InstanceID=`aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=$VALUE" \
+            "Name=instance-state-name,Values=running" \
+  --output json --query 'Reservations[*].Instances[*].{InstanceId:InstanceId}' | jq -r '.[] | .[] | ."InstanceId"'`   
+echo $InstanceID 
+}
 
 get_instance_az () {
-    AZ=`aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=$VALUE" \
-        --output json     \
-        --query 'Reservations[*].Instances[*].Placement[].AvailabilityZone' | jq '.[]'`
-    
-    echo $AZ
+AZ=`aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=$VALUE" \
+            "Name=instance-state-name,Values=running" \
+  --output json \
+  --query 'Reservations[*].Instances[*].Placement[].AvailabilityZone' | jq -r '.[]'`
+echo $AZ
 }
 
 create_ebs_volume () {
+aws ec2 create-volume \
   --availability-zone $AZ \
   --size 500 \
-  --type "gp2" \
-  --tag-specification "Tags=[{Key=Name,Value="FlashNode-Testnet-$USERNAME-$BRANCH"},{Key=Branch,Value="$BRANCH"}]" \
+  --volume-type "gp2" \
+  --tag-specification "ResourceType=volume,Tags=[{Key=Name,Value="$VALUE"}]" 
 }
 
 get_volume_id () {
-    VOLUMEID=`aws ec2 describe-volumes \
-    --filters "Name=tag:Name,Values=$VALUE" \
-    --output json --query 'Volumes[*].VolumeId[]' | jq .[]`
+VOLUMEID=`aws ec2 describe-volumes \
+  --filters "Name=tag:Name,Values=$VALUE" \
+  --output json --query 'Volumes[*].VolumeId[]' | jq -r .[]`
 
-    echo $VOLUMEID
+echo $VOLUMEID
 }
 
 attach_ebs_volume () {
-aws ec2 create-volume \
-    --device "/dev/sdf" \
-    --instance-id $InstanceID \
-    --volume-id $VolumeID
+aws ec2 attach-volume \
+  --device "/dev/sdf" \
+  --instance-id $InstanceID \
+  --volume-id $VolumeID
 }
 
 create_instance () {
-# Launch new instance
 aws ec2 run-instances \
-  --user-data "file://.github/scripts/cloud-init.sh" \
+  --user-data "file://scripts/cloud-init.sh" \
   --image-id $AMI \
   --count 1 \
   --instance-type t3.2xlarge \
@@ -55,7 +62,7 @@ aws ec2 run-instances \
   --subnet-id $SUBNET \
   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":20,\"DeleteOnTermination\":true}}]" \
   --instance-initiated-shutdown-behavior terminate \
-  --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value="FlashNode-Testnet-$USERNAME-$BRANCH"},{Key=Branch,Value="$BRANCH"}]" \
+  --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value="$VALUE"},{Key=Branch,Value="$BRANCH"}]" \
   --metadata-options "InstanceMetadataTags=enabled"   
 }
 
@@ -64,7 +71,9 @@ pass
 }
 
 UserInstance=`aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=$VALUE" --output json \
+    --filters "Name=tag:Name,Values=$VALUE" \
+              "Name=instance-state-name,Values=running" \
+    --output json \
     --query 'Reservations[*].Instances[*].{InstanceId:InstanceId}' \
     | jq '.[]'`
 
@@ -80,9 +89,11 @@ elif [[ $Length -gt 1 ]] ; then
 else
     echo "Deploying new node for user"
     create_instance
+    sleep 20
     AZ=`get_instance_az`
+    
     create_ebs_volume
-    InstanceID=`aws ec2 describe-instances --filters "Name=tag:Name,Values=$VALUE" --output json --query 'Reservations[*].Instances[*].{InstanceId:InstanceId}' | jq '.[] | .[] | ."InstanceId"'`
+    InstanceID=`get_instance_id`
     VolumeID=`get_volume_id`
     attach_ebs_volume
 fi
