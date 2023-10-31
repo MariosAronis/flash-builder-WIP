@@ -24,7 +24,7 @@ get_instance_az () {
 create_ebs_volume () {
   --availability-zone $AZ \
   --size 500 \
-  --type "gp2"
+  --type "gp2" \
   --tag-specification "Tags=[{Key=Name,Value="FlashNode-Testnet-$USERNAME-$BRANCH"},{Key=Branch,Value="$BRANCH"}]" \
 }
 
@@ -38,8 +38,8 @@ get_volume_id () {
 
 attach_ebs_volume () {
 aws ec2 create-volume \
-    --device "/dev/sdf"
-    --instance-id $InstanceID
+    --device "/dev/sdf" \
+    --instance-id $InstanceID \
     --volume-id $VolumeID
 }
 
