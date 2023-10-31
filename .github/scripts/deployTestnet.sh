@@ -7,18 +7,19 @@ USERNAME=$2
 VALUE=${USERNAME}-${BRANCH}
 
 echo $VALUE
-
+# VALUE=openvpn
 UserInstance=`aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=$VALUE" --output json \
-    --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,Tags:Tags}' \
-    | jq '.[]'`
-Length=`echo $UserInstance | jq '. | length'`
+    --filters "Name=tag:Name,Values=$VALUE" --output text \
+    --query 'Reservations[*].Instances[*].{InstanceId:InstanceId}'
+    # | jq '.[]'`
+Length=`echo $UserInstance | grep -c '^[^#]'`
+
 echo $UserInstance
 echo $Length
 
-if (( $Length -eq 1 )) ; then
-    echo "Uodating node"
-elif (( $Length > 1 )) ; then
+if [[ $Length -eq 1 ]] ; then
+    echo "Updating node"
+elif [[ $Length -gt 1 ]] ; then
     echo "Multiple nodes, must kill all and restart"
 else
     echo "Deploying new node for user"
