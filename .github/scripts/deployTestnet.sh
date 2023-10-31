@@ -53,7 +53,7 @@ aws ec2 attach-volume \
 
 create_instance () {
 aws ec2 run-instances \
-  --user-data "file://scripts/cloud-init.sh" \
+  --user-data "file://.github/scripts/cloud-init.sh" \
   --image-id $AMI \
   --count 1 \
   --instance-type t3.2xlarge \
