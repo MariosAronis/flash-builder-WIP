@@ -38,8 +38,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs:
-      - build
+    # needs:
+    #   - build
     env:
       DATA_ENV: ${{ github.event.inputs.environment || 'Testnet' }}
       DATA_USER: ${{ github.actor }}
