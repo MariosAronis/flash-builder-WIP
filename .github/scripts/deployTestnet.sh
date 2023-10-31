@@ -5,7 +5,7 @@ set -ex
 BRANCH=$1
 USERNAME=$2
 
-AMI="ami-0a588942e90cfecc9"
+AMI="ami-079167f081a690d5a"
 SG="sg-06d9f0fd0b749c6ee"
 SUBNET=subnet-0160d2ef49ea42ecc
 VPC="vpc-09831d1e37a601415"
