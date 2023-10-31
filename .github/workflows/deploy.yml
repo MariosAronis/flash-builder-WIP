@@ -92,5 +92,5 @@ jobs:
             if [ "${{ env.DATA_ENV }}" = "Testnet" ]; then
               echo `ls ./github/scripts`;
               echo "deploying/upgrading testnet node for user ${{ env.DATA_USER }} on branch $GITHUB_REF_NAME";
-              ./github/scripts/deployTestnet.sh ${{ GITHUB_REF_NAME }} ${{ env.DATA_USER }}
+              ./github/scripts/deployTestnet.sh $GITHUB_REF_NAME ${{ env.DATA_USER }}
             fi
