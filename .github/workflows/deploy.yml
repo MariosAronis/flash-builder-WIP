@@ -84,7 +84,8 @@ jobs:
       - name: Mainnet Deployer
         run: |
             if [ "${{ env.DATA_ENV }}" = "Mainet" ]; then
-              echo "updating production node"            fi
+              echo "updating production node"    
+            fi
 
       - name: Testnet Deployer
         run: |
