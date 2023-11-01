@@ -97,7 +97,7 @@ elif [[ $Length -gt 1 ]] ; then
     ##TO DO
     echo "Multiple nodes, must kill all and deploy a fresh one...proceeding!"
 else
-    sed -i "s/__HOSTNAME__/$VALUE" .github/scripts/cloud-init.sh
+    sed -i "s/__HOSTNAME__/$VALUE/g" .github/scripts/cloud-init.sh
     echo "Deploying new node for user"
     InstanceProfile=`get_iam_instance_profile`
     create_instance
