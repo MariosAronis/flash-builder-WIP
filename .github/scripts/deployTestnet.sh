@@ -61,7 +61,7 @@ aws ec2 run-instances \
   --security-group-ids $SG \
   --subnet-id $SUBNET \
   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":100,\"DeleteOnTermination\":true}}]" \
-  --iam-instance-profile $InstanceProfile\
+  --iam-instance-profile Arn=$InstanceProfile \
   --instance-initiated-shutdown-behavior terminate \
   --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value="$VALUE"},{Key=Branch,Value="$BRANCH"}]" \
   --metadata-options "InstanceMetadataTags=enabled"   
@@ -96,6 +96,7 @@ if [[ $Length -eq 1 ]] ; then
 elif [[ $Length -gt 1 ]] ; then
     ##TO DO
     echo "Multiple nodes, must kill all and deploy a fresh one...proceeding!"
+    ##
 else
     sed -i "s/__HOSTNAME__/$VALUE/g" .github/scripts/cloud-init.sh
     echo "Deploying new node for user"
