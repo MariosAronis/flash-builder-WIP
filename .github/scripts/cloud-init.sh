@@ -13,7 +13,6 @@ apt-get install ansible -y
 hostnamectl set-hostname $HOSTNAME
 git clone https://github.com/MariosAronis/FlashNodes-WIP.git ~/Flashnodes
 
-ansible-galaxy role install --roles-path=$HOME/Flashnodes/ansible gantsign.golang
+ansible-galaxy role install --roles-path=/home/ubuntu/Flashnodes/ansible gantsign.golang
 
-
-ansible-playbook  ansible/provision-flashnode.yml --skip-tags remote
+ansible-playbook  /home/ubuntu/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote
