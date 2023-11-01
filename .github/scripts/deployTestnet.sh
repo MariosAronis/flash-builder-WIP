@@ -102,6 +102,7 @@ else
     echo "Deploying new node for user"
     InstanceProfile=`get_iam_instance_profile`
     create_instance
+    sleep 20
     AZ=`get_instance_az`
     create_ebs_volume
     InstanceID=`get_instance_id`
