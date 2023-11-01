@@ -15,6 +15,6 @@ apt-get install ansible -y
 hostnamectl set-hostname $HOSTNAME
 
 # Clone the Infra repo and execute ansible on localhost
-su -P ubuntu "git clone https://github.com/MariosAronis/FlashNodes-WIP.git $HOME/Flashnodes"
-su -p ubuntu "ansible-galaxy role install --roles-path=$HOME/Flashnodes/ansible gantsign.golang"
-su -p ubuntu "ansible-playbook $HOME/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote"
+su -P ubuntu "git clone https://github.com/MariosAronis/FlashNodes-WIP.git /home/ubuntu/Flashnodes"
+su -p ubuntu "ansible-galaxy role install --roles-path=/home/ubuntu/Flashnodes/ansible gantsign.golang"
+su -p ubuntu "ansible-playbook /home/ubuntu/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote"
