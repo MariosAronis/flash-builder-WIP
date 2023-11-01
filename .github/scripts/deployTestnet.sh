@@ -61,9 +61,19 @@ aws ec2 run-instances \
   --security-group-ids $SG \
   --subnet-id $SUBNET \
   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":100,\"DeleteOnTermination\":true}}]" \
+  --iam-instance-profile $InstanceProfile\
   --instance-initiated-shutdown-behavior terminate \
   --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value="$VALUE"},{Key=Branch,Value="$BRANCH"}]" \
   --metadata-options "InstanceMetadataTags=enabled"   
+}
+
+get_iam_instance_profile () {
+InstanceProfile=`aws iam get-instance-profile \
+  --instance-profile-name flashnode_profile \
+  --output text \
+  --query 'InstanceProfile.Arn'`
+
+echo $InstanceProfile
 }
 
 delete_instance () {
@@ -87,11 +97,11 @@ elif [[ $Length -gt 1 ]] ; then
     ##TO DO
     echo "Multiple nodes, must kill all and deploy a fresh one...proceeding!"
 else
+    sed -i "s/__HOSTNAME__/$VALUE" .github/scripts/cloud-init.sh
     echo "Deploying new node for user"
+    InstanceProfile=`get_iam_instance_profile`
     create_instance
-    sleep 20
     AZ=`get_instance_az`
-    
     create_ebs_volume
     InstanceID=`get_instance_id`
     VolumeID=`get_volume_id`
