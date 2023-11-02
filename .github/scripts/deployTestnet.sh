@@ -97,7 +97,7 @@ if [[ $Length -eq 1 ]] ; then
     --instance-ids "$InstaceId" \
     --document-name "AWS-RunShellScript" \
     --comment "IP config" \
-    --parameters commands=ifconfig \
+    --parameters commands="ansible-playbook /home/ubuntu/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote --tags upgradegeth" \
     --output json
 
 elif [[ $Length -gt 1 ]] ; then
