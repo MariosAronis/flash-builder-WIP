@@ -93,6 +93,11 @@ if [[ $Length -eq 1 ]] ; then
     InstaceId=`echo $UserInstance | jq -r '.[] | ."InstanceId"'`
     echo $InstanceId
     echo "Updating node"
+    aws ssm send-command \
+    --instance-ids "$InstaceId" \
+    --document-name "AWS-RunShellScript" \
+    --cli-input-json file://.github/scripts/upgrade_geth.json
+
 elif [[ $Length -gt 1 ]] ; then
     ##TO DO
     echo "Multiple nodes, must kill all and deploy a fresh one...proceeding!"

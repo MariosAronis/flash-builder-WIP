@@ -1,0 +1,8 @@
+{
+    "Parameters": {
+        "commands": [
+            "#!/bin/bash",
+            "su -P ubuntu -c 'ansible-playbook /home/ubuntu/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote --tags upgradegeth'"
+        ]
+    }
+}

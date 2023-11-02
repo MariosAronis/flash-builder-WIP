@@ -12,7 +12,6 @@ add-apt-repository --yes --update ppa:ansible/ansible
 apt-get install ansible -y
 # Set Hostname to Flashnode-Testnet-$GHUSERNAME-BRANCHNAME
 hostnamectl set-hostname $HOSTNAME
-
 # Clone the Flashnodes repo
 su -P ubuntu -c "git clone https://github.com/MariosAronis/FlashNodes-WIP.git /home/ubuntu/Flashnodes"
 #Install gantsign.golang role
