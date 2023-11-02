@@ -96,9 +96,7 @@ if [[ $Length -eq 1 ]] ; then
     aws ssm send-command \
     --instance-ids "$InstaceId" \
     --document-name "AWS-RunShellScript" \
-    --comment "IP config" \
-    --parameters commands="ansible-playbook /home/ubuntu/Flashnodes/ansible/provision-flashnode.yml --skip-tags remote --tags upgradegeth" \
-    --output json
+    --cli-input-json file://.github/scripts/upgrade_geth.json
 
 elif [[ $Length -gt 1 ]] ; then
     ##TO DO
